@@ -39,6 +39,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _createList(){
+    
     return FutureBuilder(
       future: productProvider.fetchAll(),
       builder: (context, AsyncSnapshot<List<Product>> snapshot){
@@ -68,8 +69,9 @@ class HomePage extends StatelessWidget {
       onDismissed: (direction) async {
 
         var count = await productProvider.deleteProduct(producto.id);
-        if(count == -1)
+        if(count == -1){
           _mostrarSnackbar("Hubo un error al eliminar el producto. Checha tu conexion a Internet");
+        }
 
 
       }, 

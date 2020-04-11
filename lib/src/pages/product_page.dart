@@ -197,7 +197,9 @@ class _ProductPageState extends State<ProductPage> {
     }else{
 
       return Image(
-          image: AssetImage( _foto?.path ?? 'assets/no_image.png'),
+          //image: AssetImage( _foto?.path ?? 'assets/no_image.png'),
+          //image: FileImage(File(_foto.path)),
+          image: _foto?.path == null ? AssetImage('assets/no_image.png') : FileImage(File(_foto.path)),
           height: 300.0,
           fit: BoxFit.cover,
       );
