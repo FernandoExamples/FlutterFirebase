@@ -13,11 +13,11 @@ class Provider extends InheritedWidget {
 
     return _instancia;
   }
+  Provider._internal( {Key key, Widget child} ) : super(key: key, child: child);
 
   //Patron bloc
   final _loginBloc = LoginBloc();
 
-  Provider._internal( {Key key, Widget child} ) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
@@ -25,4 +25,5 @@ class Provider extends InheritedWidget {
   static LoginBloc of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<Provider>()._loginBloc;
   }
+
 }
