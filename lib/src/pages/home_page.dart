@@ -8,6 +8,7 @@ class HomePage extends StatelessWidget {
 
   static final routeName = 'home';
   final productProvider = ProductsProvider();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +16,7 @@ class HomePage extends StatelessWidget {
     final bloc = Provider.of(context);
 
     return Scaffold(
+       key: _scaffoldKey,
        appBar: AppBar(
           title: Text('HomePage'),
        ),
@@ -63,9 +65,12 @@ class HomePage extends StatelessWidget {
     return Dismissible(
       key: UniqueKey(),
       background: Container(color: Colors.red),     
-      onDismissed: (direction){
+      onDismissed: (direction) async {
 
-        productProvider.deleteProduct(producto.id);
+        var count = await productProvider.deleteProduct(producto.id);
+        if(count == -1)
+          _mostrarSnackbar("Hubo un error al eliminar el producto. Checha tu conexion a Internet");
+
 
       }, 
 
@@ -95,5 +100,15 @@ class HomePage extends StatelessWidget {
       
     );
 
+  }
+
+  void _mostrarSnackbar(String mensaje){
+
+    final snackbar = SnackBar(
+        content: Text(mensaje),
+        duration: Duration(milliseconds: 1500),
+    );
+    
+    _scaffoldKey.currentState.showSnackBar(snackbar);
   }
 }

@@ -80,7 +80,12 @@ class ProductsProvider{
   Future<int> deleteProduct(String id) async {
       var url = '$_url/productos/$id.json';
 
-      final resp = await http.delete(url);
+      try {
+        final resp = await http.delete(url);
+      }on Exception catch(ex){
+        print(ex);
+        return -1;
+      }
 
       // print(resp.body);
 
