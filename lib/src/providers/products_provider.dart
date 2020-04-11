@@ -61,14 +61,19 @@ class ProductsProvider{
         return Future.error('Error al obtener todos los registros. fetchAll()');
       }
 
+     
       Map<String, dynamic> decodedData = json.decode(resp.body);
 
-      decodedData.forEach((id, product){
-          var prodTemp = Product.fromMap(product);
-          prodTemp.id = id;
+      //si no hay productos en Firebase se regresa un String con "null" en el body de resp, 
+      //lo que hace que decodedData quede null
+      if(decodedData != null){
+          decodedData.forEach((id, product){
+              var prodTemp = Product.fromMap(product);
+              prodTemp.id = id;
 
-          productos.add(prodTemp);
-      });
+              productos.add(prodTemp);
+          });
+      }      
 
       return productos;
   }
