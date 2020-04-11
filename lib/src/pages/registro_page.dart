@@ -1,11 +1,13 @@
-import 'package:crud_rest/src/pages/registro_page.dart';
+import 'package:crud_rest/src/pages/login_page.dart';
+import 'package:crud_rest/src/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:crud_rest/src/bloc/provider.dart';
 import 'package:crud_rest/src/pages/home_page.dart';
 
-class LoginPage extends StatelessWidget {
+class RegistroPage extends StatelessWidget {
 
-  static final routeName = 'login';
+  static final routeName = 'registro';
+  final usuarioProvider = new UserProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +104,7 @@ class LoginPage extends StatelessWidget {
 
             child: Column(
               children: <Widget>[
-                Text('Ingreso', style: TextStyle(fontSize: 20.0)),
+                Text('Registro', style: TextStyle(fontSize: 20.0)),
                 SizedBox(height: 60.0),
                 _crearEmail(bloc),
                 SizedBox(height: 30.0),
@@ -114,8 +116,8 @@ class LoginPage extends StatelessWidget {
           ),
 
           FlatButton(
-              child: Text('Crear una nueva cuenta'),
-              onPressed: () => Navigator.pushReplacementNamed(context, RegistroPage.routeName),
+              child: Text('¿Ya tienes cuenta? Login'),
+              onPressed: () => Navigator.pushReplacementNamed(context, LoginPage.routeName),
           ),
           SizedBox(height: 100)
           
@@ -186,7 +188,7 @@ class LoginPage extends StatelessWidget {
         return RaisedButton(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-            child: Text('Ingresar'),
+            child: Text('Registrarse'),
           ),
 
           shape: RoundedRectangleBorder(
@@ -196,7 +198,7 @@ class LoginPage extends StatelessWidget {
           color: Colors.deepPurple,
           textColor: Colors.white,
 
-          onPressed: snapshot.hasData ? ()  => _login(context, bloc): null,
+          onPressed: snapshot.hasData ? ()  => _register(context, bloc): null,
         );
 
       }      
@@ -204,13 +206,10 @@ class LoginPage extends StatelessWidget {
      
   }
 
-  void _login(BuildContext context, LoginBloc bloc){
+  void _register(BuildContext context, LoginBloc bloc){
 
-    print('========================');
-    print('Email: ${bloc.email}');
-    print('Password: ${bloc.password}');
-    print('========================');
+    usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
 
-    Navigator.pushReplacementNamed(context, HomePage.routeName);
+    // Navigator.pushReplacementNamed(context, HomePage.routeName);
   }
 }

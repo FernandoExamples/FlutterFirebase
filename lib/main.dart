@@ -1,4 +1,5 @@
 import 'package:crud_rest/src/pages/product_page.dart';
+import 'package:crud_rest/src/pages/registro_page.dart';
 import 'package:flutter/material.dart';
 import 'package:crud_rest/src/bloc/provider.dart';
 import 'package:crud_rest/src/pages/home_page.dart';
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Material App',
-        initialRoute: HomePage.routeName,
+        initialRoute: LoginPage.routeName,
         theme: ThemeData(
           primaryColor: Colors.deepPurple
         ),
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
           LoginPage.routeName: (context) => LoginPage(),
           HomePage.routeName: (context) => HomePage(),
           ProductPage.routeName: (context) => ProductPage(),
+          RegistroPage.routeName: (context) => RegistroPage(),
         },
       ),
     );
