@@ -14,3 +14,16 @@ ESto debido a que Firebase no provee una API REST para su servicio de Storage, d
 - Cargar imágenes
 - Cámara
 - Galería de imágenes
+
+## Rama Login 
+
+En esta rama en particular, se implementa la funcionalidad de la pantalla de Login usando Firebase.  
+Se abordan temas como:  
+- Funcionamiento completo del login
+- Registro de nuevos usuarios
+- Firebase Auth Rest API
+- Manejo de Tokens
+- Alertas
+- Habilitar autenticación en Firebase
+
+Aquí vamos a trabajar en hacer funcional nuestro login y que nuestros servicios utilicen el token que Firebase nos regresará.
