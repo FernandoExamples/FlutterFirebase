@@ -1,4 +1,5 @@
 import 'package:crud_rest/src/pages/registro_page.dart';
+import 'package:crud_rest/src/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:crud_rest/src/bloc/provider.dart';
 import 'package:crud_rest/src/pages/home_page.dart';
@@ -6,6 +7,7 @@ import 'package:crud_rest/src/pages/home_page.dart';
 class LoginPage extends StatelessWidget {
 
   static final routeName = 'login';
+  final userProvider = UserProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -206,11 +208,8 @@ class LoginPage extends StatelessWidget {
 
   void _login(BuildContext context, LoginBloc bloc){
 
-    print('========================');
-    print('Email: ${bloc.email}');
-    print('Password: ${bloc.password}');
-    print('========================');
+    userProvider.login(bloc.email, bloc.password);
 
-    Navigator.pushReplacementNamed(context, HomePage.routeName);
+    //Navigator.pushReplacementNamed(context, HomePage.routeName);
   }
 }
