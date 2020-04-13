@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:crud_rest/src/shared_prefs/preferencias_usuario.dart';
 import 'package:http/http.dart' as http;
+
 class UserProvider{
 
   final _apiKey = 'AIzaSyANkSeF2B_4sk3sWjof1YEMXhX6KnEK53c';
@@ -18,10 +19,16 @@ class UserProvider{
         'returnSecureToken' : true
       };
 
-      final resp = await http.post(
-        registEndPoint,
-        body: json.encode(authData)
-      );
+      var resp;
+      try{
+            resp = await http.post(
+            registEndPoint,
+            body: json.encode(authData)
+          );
+      } on Exception catch(ex){
+          print(ex);
+          return {'ok': false, 'exception':true, 'mensaje': 'Exception has ocurred'};
+      }
 
       Map<String, dynamic> decodedResp = json.decode(resp.body);
 
@@ -46,10 +53,16 @@ class UserProvider{
         'returnSecureToken' : true
       };
 
-      final resp = await http.post(
-        loginEndpoint,
-        body: json.encode(authData)
-      );
+        var resp;
+      try{
+          resp = await http.post(
+          loginEndpoint,
+          body: json.encode(authData)
+        );
+      } on Exception catch(ex){
+          print(ex);
+          return {'ok': false, 'exception':true, 'mensaje': 'Exception has ocurred'};
+      }
 
       Map<String, dynamic> decodedResp = json.decode(resp.body);
 

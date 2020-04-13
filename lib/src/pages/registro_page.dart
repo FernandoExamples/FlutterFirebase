@@ -227,7 +227,10 @@ class _RegistroPageState extends State<RegistroPage> {
 
     if(info['ok']){        
         Navigator.pushReplacementNamed(context, HomePage.routeName);
-    }else{
+    }else if(info['exception']){
+        mostrarSnackbar(_scaffoldKey, "Ha ocurrido un error. Revisa tu conexión a Internet"); 
+    }
+    else{
       //  showAlert(context, 'Usuario Existente', 'El correo que intentas registrar ya existe');
        mostrarSnackbar(_scaffoldKey, 'El correo que intentas registrar ya existe');
     }

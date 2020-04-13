@@ -228,6 +228,8 @@ class _LoginPageState extends State<LoginPage> {
 
     if(info['ok']){        
         Navigator.pushReplacementNamed(context, HomePage.routeName);
+    }else if(info['exception']){
+        mostrarSnackbar(_scaffoldKey, "Ha ocurrido un error. Revisa tu conexión a Internet"); 
     }else{
       // showAlert(context, "Intentalo de nuevo", "Usuario o contraseña incorrectos");
       mostrarSnackbar(_scaffoldKey, "Usuario o contraseña incorrectos");
