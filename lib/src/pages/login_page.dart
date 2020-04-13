@@ -5,14 +5,25 @@ import 'package:crud_rest/src/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:crud_rest/src/bloc/provider.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
 
   static final routeName = 'login';
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   final userProvider = UserProvider();
+  bool _entrando = false; 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       key: _scaffoldKey,
        body: Stack(children: <Widget>[
           _crearFondo(context),
           _logingForm(context),
@@ -199,7 +210,7 @@ class LoginPage extends StatelessWidget {
           color: Colors.deepPurple,
           textColor: Colors.white,
 
-          onPressed: snapshot.hasData ? ()  => _login(context, bloc): null,
+          onPressed: _entrando ? null : snapshot.hasData ? ()  => _login(context, bloc): null,
         );
 
       }      
@@ -208,15 +219,23 @@ class LoginPage extends StatelessWidget {
   }
 
   void _login(BuildContext context, LoginBloc bloc) async {
+    
+    setState(() {
+      _entrando = true;
+    });
 
     Map info = await userProvider.login(bloc.email, bloc.password);
 
-    if(info['ok']){
-        
+    if(info['ok']){        
         Navigator.pushReplacementNamed(context, HomePage.routeName);
     }else{
-      showAlert(context, "Intentalo de nuevo", "Usuario o contraseña incorrectos");
+      // showAlert(context, "Intentalo de nuevo", "Usuario o contraseña incorrectos");
+      mostrarSnackbar(_scaffoldKey, "Usuario o contraseña incorrectos");
     }
+
+    setState(() {
+      _entrando = false;
+    });
 
   }
 }

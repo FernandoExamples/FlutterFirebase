@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:crud_rest/src/shared_prefs/preferencias_usuario.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime_type/mime_type.dart';
@@ -9,6 +10,7 @@ import 'package:crud_rest/src/models/product.dart';
 class ProductsProvider{
 
   final String _url = 'https://flutter-varios-92b9d.firebaseio.com';
+  final _prefs = new PreferenciasUsuario();
 
   /*
    * Metodo que hace un post a Firebase para guardar un objeto en Json. 
@@ -17,7 +19,7 @@ class ProductsProvider{
    * Con ese json se puede transformar a un mapa para obtener el id.
    */
   Future<String> saveProduct(Product producto) async{
-      String url = '$_url/productos.json';
+      String url = '$_url/productos.json?auth=${_prefs.token}';
 
       http.Response response;
 
@@ -50,7 +52,7 @@ class ProductsProvider{
   Future<List<Product>> fetchAll() async {
       List<Product> productos = new List();
 
-      String url = '$_url/productos.json';
+      String url = '$_url/productos.json?auth=${_prefs.token}';
 
       http.Response resp;
       try{
@@ -83,7 +85,7 @@ class ProductsProvider{
     resp se queda siempre null. 
    */
   Future<int> deleteProduct(String id) async {
-      var url = '$_url/productos/$id.json';
+      var url = '$_url/productos/$id.json?auth=${_prefs.token}';
 
       try {
         await http.delete(url);
@@ -104,7 +106,7 @@ class ProductsProvider{
    */
   Future<bool> editProduct(Product producto) async{
 
-      String url = '$_url/productos/${producto.id}.json';
+      String url = '$_url/productos/${producto.id}.json?auth=${_prefs.token}';
 
       http.Response response;
 

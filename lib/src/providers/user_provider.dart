@@ -32,7 +32,7 @@ class UserProvider{
 
         return {'ok': true, 'token': decodedResp['idToken']};
       }else{
-        return {'ok': true, 'mensaje': decodedResp['error']['message']};
+        return {'ok': false, 'mensaje': decodedResp['error']['message']};
       }
   }
 
@@ -62,7 +62,7 @@ class UserProvider{
 
         return {'ok': true, 'token': decodedResp['idToken']};
       }else{
-        return {'ok': true, 'mensaje': decodedResp['error']['message']};
+        return {'ok': false, 'mensaje': decodedResp['error']['message']};
       }
   }
 }

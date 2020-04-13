@@ -1,6 +1,7 @@
 import 'package:crud_rest/src/models/product.dart';
 import 'package:crud_rest/src/pages/product_page.dart';
 import 'package:crud_rest/src/providers/products_provider.dart';
+import 'package:crud_rest/src/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -67,9 +68,9 @@ class HomePage extends StatelessWidget {
 
         var count = await productProvider.deleteProduct(producto.id);
         if(count == -1){
-          _mostrarSnackbar("Hubo un error al eliminar el producto. Checha tu conexion a Internet");
+          
+          utils.mostrarSnackbar(_scaffoldKey, "Hubo un error al eliminar el producto. Checha tu conexion a Internet");
         }
-
 
       }, 
 
@@ -99,15 +100,5 @@ class HomePage extends StatelessWidget {
       
     );
 
-  }
-
-  void _mostrarSnackbar(String mensaje){
-
-    final snackbar = SnackBar(
-        content: Text(mensaje),
-        duration: Duration(milliseconds: 1500),
-    );
-    
-    _scaffoldKey.currentState.showSnackBar(snackbar);
-  }
+  }   
 }

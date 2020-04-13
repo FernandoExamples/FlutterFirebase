@@ -11,6 +11,31 @@ bool isNumeric(String value) {
 void showAlert(BuildContext context, String title, String message){
   showDialog(
     context: context,
-    
-  );  
+    builder: (context){
+
+      return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          ],
+      );
+
+    }
+  );   
 }
+
+void mostrarSnackbar(GlobalKey<ScaffoldState> scaffoldKey, String mensaje){
+
+    final snackbar = SnackBar(
+        content: Text(mensaje),
+        duration: Duration(milliseconds: 1500),
+    );
+    
+    scaffoldKey.currentState.showSnackBar(snackbar);
+}
+
+

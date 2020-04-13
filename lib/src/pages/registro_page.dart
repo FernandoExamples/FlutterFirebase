@@ -1,16 +1,28 @@
+import 'package:crud_rest/src/pages/home_page.dart';
 import 'package:crud_rest/src/pages/login_page.dart';
 import 'package:crud_rest/src/providers/user_provider.dart';
+import 'package:crud_rest/src/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:crud_rest/src/bloc/provider.dart';
 
-class RegistroPage extends StatelessWidget {
+class RegistroPage extends StatefulWidget {
 
   static final routeName = 'registro';
+
+  @override
+  _RegistroPageState createState() => _RegistroPageState();
+}
+
+class _RegistroPageState extends State<RegistroPage> {
+
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final usuarioProvider = new UserProvider();
+  bool _registrando = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       key: _scaffoldKey,
        body: Stack(children: <Widget>[
           _crearFondo(context),
           _logingForm(context),
@@ -197,7 +209,7 @@ class RegistroPage extends StatelessWidget {
           color: Colors.deepPurple,
           textColor: Colors.white,
 
-          onPressed: snapshot.hasData ? ()  => _register(context, bloc): null,
+          onPressed: _registrando ? null : snapshot.hasData ? ()  => _register(context, bloc): null,
         );
 
       }      
@@ -205,10 +217,24 @@ class RegistroPage extends StatelessWidget {
      
   }
 
-  void _register(BuildContext context, LoginBloc bloc){
+  void _register(BuildContext context, LoginBloc bloc) async {
 
-    usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
+    setState(() {
+      _registrando = true;
+    });
 
-    // Navigator.pushReplacementNamed(context, HomePage.routeName);
+    Map info = await usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
+
+    if(info['ok']){        
+        Navigator.pushReplacementNamed(context, HomePage.routeName);
+    }else{
+      //  showAlert(context, 'Usuario Existente', 'El correo que intentas registrar ya existe');
+       mostrarSnackbar(_scaffoldKey, 'El correo que intentas registrar ya existe');
+    }
+
+    setState(() {
+      _registrando = false;
+    });
   }
+   
 }
