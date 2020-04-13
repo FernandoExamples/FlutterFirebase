@@ -2,7 +2,6 @@ import 'package:crud_rest/src/models/product.dart';
 import 'package:crud_rest/src/pages/product_page.dart';
 import 'package:crud_rest/src/providers/products_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:crud_rest/src/bloc/provider.dart';
 
 class HomePage extends StatelessWidget {
 
@@ -12,8 +11,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final bloc = Provider.of(context);
 
     return Scaffold(
        key: _scaffoldKey,

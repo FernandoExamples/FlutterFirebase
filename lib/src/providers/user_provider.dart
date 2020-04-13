@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:crud_rest/src/shared_prefs/preferencias_usuario.dart';
 import 'package:http/http.dart' as http;
 class UserProvider{
 
   final _apiKey = 'AIzaSyANkSeF2B_4sk3sWjof1YEMXhX6KnEK53c';
+  final _prefs = new PreferenciasUsuario();
+
 
   ///Lanza una peticion POST a Firebase para crear un nuevo usuario 
   Future<Map<String, dynamic>> nuevoUsuario(String email, String password) async {
@@ -24,7 +27,9 @@ class UserProvider{
 
       //si contiene el campo idToken es porque es una respuesta valida y se registro el usuario
       if(decodedResp.containsKey('idToken')){
-        //TODO  SALVAR EL TOKEN EN EL STORAGE 
+
+        _prefs.token = decodedResp['idToken']; //guardar el token en las preferencias de usuario
+
         return {'ok': true, 'token': decodedResp['idToken']};
       }else{
         return {'ok': true, 'mensaje': decodedResp['error']['message']};
@@ -48,11 +53,13 @@ class UserProvider{
 
       Map<String, dynamic> decodedResp = json.decode(resp.body);
 
-      print(decodedResp);
+      //print(decodedResp);
 
       //si contiene el campo idToken es porque es una respuesta valida y existe el email
       if(decodedResp.containsKey('idToken')){
-        //TODO  SALVAR EL TOKEN EN EL STORAGE 
+
+        _prefs.token = decodedResp['idToken']; //guardar el token en las preferencias de usuario
+
         return {'ok': true, 'token': decodedResp['idToken']};
       }else{
         return {'ok': true, 'mensaje': decodedResp['error']['message']};

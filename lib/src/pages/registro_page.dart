@@ -2,7 +2,6 @@ import 'package:crud_rest/src/pages/login_page.dart';
 import 'package:crud_rest/src/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:crud_rest/src/bloc/provider.dart';
-import 'package:crud_rest/src/pages/home_page.dart';
 
 class RegistroPage extends StatelessWidget {
 

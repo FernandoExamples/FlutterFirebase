@@ -1,11 +1,20 @@
 import 'package:crud_rest/src/pages/product_page.dart';
 import 'package:crud_rest/src/pages/registro_page.dart';
+import 'package:crud_rest/src/shared_prefs/preferencias_usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:crud_rest/src/bloc/provider.dart';
 import 'package:crud_rest/src/pages/home_page.dart';
 import 'package:crud_rest/src/pages/login_page.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final prefs = new PreferenciasUsuario();
+  await prefs.initPrefs();
+  
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override

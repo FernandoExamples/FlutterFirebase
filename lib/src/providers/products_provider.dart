@@ -86,7 +86,7 @@ class ProductsProvider{
       var url = '$_url/productos/$id.json';
 
       try {
-        final resp = await http.delete(url);
+        await http.delete(url);
       }on Exception catch(ex){
         print(ex);
         return -1;

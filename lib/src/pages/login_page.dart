@@ -1,8 +1,9 @@
+import 'package:crud_rest/src/pages/home_page.dart';
 import 'package:crud_rest/src/pages/registro_page.dart';
 import 'package:crud_rest/src/providers/user_provider.dart';
+import 'package:crud_rest/src/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:crud_rest/src/bloc/provider.dart';
-import 'package:crud_rest/src/pages/home_page.dart';
 
 class LoginPage extends StatelessWidget {
 
@@ -206,10 +207,16 @@ class LoginPage extends StatelessWidget {
      
   }
 
-  void _login(BuildContext context, LoginBloc bloc){
+  void _login(BuildContext context, LoginBloc bloc) async {
 
-    userProvider.login(bloc.email, bloc.password);
+    Map info = await userProvider.login(bloc.email, bloc.password);
 
-    //Navigator.pushReplacementNamed(context, HomePage.routeName);
+    if(info['ok']){
+        
+        Navigator.pushReplacementNamed(context, HomePage.routeName);
+    }else{
+      showAlert(context, "Intentalo de nuevo", "Usuario o contraseña incorrectos");
+    }
+
   }
 }
