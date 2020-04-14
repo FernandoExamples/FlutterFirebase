@@ -73,9 +73,9 @@ class UserProvider{
 
         _prefs.token = decodedResp['idToken']; //guardar el token en las preferencias de usuario
 
-        return {'ok': true, 'token': decodedResp['idToken']};
+        return {'ok': true, 'exception':false, 'token': decodedResp['idToken']};
       }else{
-        return {'ok': false, 'mensaje': decodedResp['error']['message']};
+        return {'ok': false, 'exception':false, 'mensaje': decodedResp['error']['message']};
       }
   }
 }

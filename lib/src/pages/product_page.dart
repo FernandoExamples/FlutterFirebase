@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:crud_rest/src/bloc/productos_bloc.dart';
-import 'package:crud_rest/src/bloc/provider.dart';
 import 'package:crud_rest/src/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:crud_rest/src/models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:crud_rest/src/utils/utils.dart' as utils;
+import 'package:provider/provider.dart';
 
 class ProductPage extends StatefulWidget {
 
@@ -29,7 +28,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
 
-    _productosBloc = Provider.ofProductosBloc(context);
+    _productosBloc = Provider.of<ProductosBloc>(context);
 
     final prodArgs = ModalRoute.of(context).settings.arguments;
     if( prodArgs != null){

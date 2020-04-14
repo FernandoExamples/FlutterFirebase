@@ -29,15 +29,12 @@ class ProductosBloc{
         print(ex.message);
         print(ex);
         _productosController.addError(ex);
-      }on Exception catch(ex){
-        print(ex);
-        _productosController.addError(ex);
       }
   }
 
   Future<String> agregarProducto(Product producto) async {
 
-      //notificamos el stream que indica que se esta guardandi informacion para bloquear botones
+      //notificamos el stream que indica que se esta guardando informacion para bloquear botones
       _loadingController.sink.add(true); 
       String id = await _productosProvider.saveProduct(producto);
       if(id != null)

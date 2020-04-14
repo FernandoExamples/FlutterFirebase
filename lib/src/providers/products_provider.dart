@@ -63,7 +63,7 @@ class ProductsProvider{
         print(ex);
         // return Future.error('Error al obtener todos los registros. fetchAll()');
         // throw Exception('Error al obtener todos los registros. fetchAll()');
-        throw CustomException(CustomException.INTERNET_CODE, 'Error al obtener todos los registros. fetchAll(');
+        throw CustomException(CustomException.INTERNET_CODE, 'Error al obtener todos los registros');
 
       }
 

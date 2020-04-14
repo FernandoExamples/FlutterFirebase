@@ -27,3 +27,7 @@ Se abordan temas como:
 - Habilitar autenticación en Firebase
 
 Aquí vamos a trabajar en hacer funcional nuestro login y que nuestros servicios utilicen el token que Firebase nos regresará.
+
+Ademas se sustituye el uso del Provider creado manualmente por el que provee la libreria
+[Provider](https://pub.dev/packages/provider#-readme-tab-) de Flutter.  
+Quedando la clase MyProvider sin uso, meramente para documentacion.

@@ -1,13 +1,11 @@
-import 'dart:async';
-
 import 'package:crud_rest/src/bloc/productos_bloc.dart';
-import 'package:crud_rest/src/bloc/provider.dart';
 import 'package:crud_rest/src/exception/custom_exception.dart';
 import 'package:crud_rest/src/models/product.dart';
 import 'package:crud_rest/src/pages/login_page.dart';
 import 'package:crud_rest/src/pages/product_page.dart';
 import 'package:crud_rest/src/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
 
@@ -18,7 +16,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final productosBloc = Provider.ofProductosBloc(context);
+    final productosBloc = Provider.of<ProductosBloc>(context);
 
     return Scaffold(
        key: _scaffoldKey,

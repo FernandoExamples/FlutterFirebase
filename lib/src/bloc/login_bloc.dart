@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:crud_rest/src/bloc/validators.dart';
@@ -34,7 +33,7 @@ class LoginBloc with Validators{
 
   String get password{
     return _passwordController.value;
-  }
+  } 
 
   dispose(){
     _emailController?.close();

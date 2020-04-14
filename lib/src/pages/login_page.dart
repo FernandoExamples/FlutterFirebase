@@ -1,9 +1,10 @@
-import 'package:crud_rest/src/pages/home_page.dart';
+import 'package:crud_rest/src/bloc/login_bloc.dart';
+import 'package:crud_rest/src/bloc/login_state.dart';
 import 'package:crud_rest/src/pages/registro_page.dart';
 import 'package:crud_rest/src/providers/user_provider.dart';
 import 'package:crud_rest/src/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:crud_rest/src/bloc/provider.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
 
@@ -18,10 +19,15 @@ class _LoginPageState extends State<LoginPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final userProvider = UserProvider();
+  LoginState _state;
   bool _entrando = false; 
+
 
   @override
   Widget build(BuildContext context) {
+
+    _state = Provider.of<LoginState>(context);
+    
     return Scaffold(
        key: _scaffoldKey,
        body: Stack(children: <Widget>[
@@ -84,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _logingForm(BuildContext context) {
 
-    final bloc = Provider.ofLoginBloc(context);
+    final loginBloc = Provider.of<LoginBloc>(context);
     final size = MediaQuery.of(context).size;
 
     return SingleChildScrollView(
@@ -118,11 +124,11 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 Text('Ingreso', style: TextStyle(fontSize: 20.0)),
                 SizedBox(height: 60.0),
-                _crearEmail(bloc),
+                _crearEmail(loginBloc),
                 SizedBox(height: 30.0),
-                _crearPassword(bloc),
+                _crearPassword(loginBloc),
                 SizedBox(height: 30.0),
-                _crearBoton(context, bloc),
+                _crearBoton(context, loginBloc),
               ],
             ),
           ),
@@ -138,10 +144,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _crearEmail(LoginBloc bloc){
+  Widget _crearEmail(LoginBloc loginBloc){
 
     return StreamBuilder(
-      stream: bloc.emailStream ,
+      stream: loginBloc.emailStream ,
       builder: (BuildContext context, AsyncSnapshot snapshot){
 
         return Container(
@@ -155,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                   errorText: snapshot.error
                 ),  
 
-                onChanged: (value) => bloc.changeEmail(value),
+                onChanged: (value) => loginBloc.changeEmail(value),
                 
               ),
             );
@@ -165,11 +171,11 @@ class _LoginPageState extends State<LoginPage> {
 
   }
 
-  Widget _crearPassword(LoginBloc bloc){
+  Widget _crearPassword(LoginBloc loginBloc){
 
 
     return StreamBuilder(
-      stream: bloc.passwordStream ,
+      stream: loginBloc.passwordStream ,
       builder: (BuildContext context, AsyncSnapshot snapshot){
         
         return Container(
@@ -183,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                   errorText: snapshot.error,
                 ),   
                 onChanged: (value){
-                  bloc.changePassword(value);
+                  loginBloc.changePassword(value);
                 },          
               ),
             );
@@ -191,10 +197,10 @@ class _LoginPageState extends State<LoginPage> {
     );  
   }
 
-  Widget _crearBoton(BuildContext context, LoginBloc bloc){
+  Widget _crearBoton(BuildContext context, LoginBloc loginBloc){
 
     return StreamBuilder(
-      stream: bloc.formValidStream,
+      stream: loginBloc.formValidStream,
       builder: (context, snapshot){
 
         return RaisedButton(
@@ -210,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
           color: Colors.deepPurple,
           textColor: Colors.white,
 
-          onPressed: _entrando ? null : snapshot.hasData ? ()  => _login(context, bloc): null,
+          onPressed: _entrando ? null : snapshot.hasData ? ()  => _login(loginBloc): null,
         );
 
       }      
@@ -218,21 +224,18 @@ class _LoginPageState extends State<LoginPage> {
      
   }
 
-  void _login(BuildContext context, LoginBloc bloc) async {
+  void _login(LoginBloc loginBloc) async {
     
     setState(() {
       _entrando = true;
     });
 
-    Map info = await userProvider.login(bloc.email, bloc.password);
-
-    if(info['ok']){        
-        Navigator.pushReplacementNamed(context, HomePage.routeName);
-    }else if(info['exception']){
-        mostrarSnackbar(_scaffoldKey, "Ha ocurrido un error. Revisa tu conexión a Internet"); 
-    }else{
-        mostrarSnackbar(_scaffoldKey, "Usuario o contraseña incorrectos");
-    }
+    Map info = await _state.login(loginBloc.email, loginBloc.password);
+    
+    if(!info['ok'])
+      mostrarSnackbar(_scaffoldKey, "Usuario o contraseña incorrectos");
+    else if(info['exception'])
+      mostrarSnackbar(_scaffoldKey, "Ha ocurrido un error. Revisa tu conexión a Internet");
     
     setState(() {
       _entrando = false;

@@ -1,9 +1,10 @@
+import 'package:crud_rest/src/bloc/login_bloc.dart';
 import 'package:crud_rest/src/pages/home_page.dart';
 import 'package:crud_rest/src/pages/login_page.dart';
 import 'package:crud_rest/src/providers/user_provider.dart';
 import 'package:crud_rest/src/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:crud_rest/src/bloc/provider.dart';
+import 'package:provider/provider.dart';
 
 class RegistroPage extends StatefulWidget {
 
@@ -83,7 +84,7 @@ class _RegistroPageState extends State<RegistroPage> {
 
   Widget _logingForm(BuildContext context) {
 
-    final bloc = Provider.ofLoginBloc(context);
+    final loginBloc = Provider.of<LoginBloc>(context);
     final size = MediaQuery.of(context).size;
 
     return SingleChildScrollView(
@@ -117,11 +118,11 @@ class _RegistroPageState extends State<RegistroPage> {
               children: <Widget>[
                 Text('Registro', style: TextStyle(fontSize: 20.0)),
                 SizedBox(height: 60.0),
-                _crearEmail(bloc),
+                _crearEmail(loginBloc),
                 SizedBox(height: 30.0),
-                _crearPassword(bloc),
+                _crearPassword(loginBloc),
                 SizedBox(height: 30.0),
-                _crearBoton(context, bloc),
+                _crearBoton(context, loginBloc),
               ],
             ),
           ),
