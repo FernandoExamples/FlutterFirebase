@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:crud_rest/src/exception/custom_exception.dart';
 import 'package:crud_rest/src/shared_prefs/preferencias_usuario.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -60,22 +61,31 @@ class ProductsProvider{
       }
       on Exception catch(ex){
         print(ex);
-        return Future.error('Error al obtener todos los registros. fetchAll()');
+        // return Future.error('Error al obtener todos los registros. fetchAll()');
+        // throw Exception('Error al obtener todos los registros. fetchAll()');
+        throw CustomException(CustomException.INTERNET_CODE, 'Error al obtener todos los registros. fetchAll(');
+
       }
 
      
       Map<String, dynamic> decodedData = json.decode(resp.body);
+      print(resp.body);
+      print(decodedData);
 
       //si no hay productos en Firebase se regresa un String con "null" en el body de resp, 
       //lo que hace que decodedData quede null
-      if(decodedData != null){
-          decodedData.forEach((id, product){
-              var prodTemp = Product.fromMap(product);
-              prodTemp.id = id;
+      if(decodedData == null) return[];
 
-              productos.add(prodTemp);
-          });
-      }      
+      if(decodedData['error'] != null) 
+        throw CustomException(CustomException.TIME_OUT_CODE, 'El token ha expirado');
+
+
+      decodedData.forEach((id, product){
+          var prodTemp = Product.fromMap(product);
+          prodTemp.id = id;
+
+          productos.add(prodTemp);
+      });
 
       return productos;
   }
@@ -84,19 +94,19 @@ class ProductsProvider{
     Elimina un objeto de Firebase. El servidor no manda respuesta.
     resp se queda siempre null. 
    */
-  Future<int> deleteProduct(String id) async {
+  Future<bool> deleteProduct(String id) async {
       var url = '$_url/productos/$id.json?auth=${_prefs.token}';
 
       try {
         await http.delete(url);
       }on Exception catch(ex){
         print(ex);
-        return -1;
+        return false;
       }
 
       // print(resp.body);
 
-      return 1;
+      return true;
   }
 
   /*

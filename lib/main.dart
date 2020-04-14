@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           HomePage.routeName: (context) => HomePage(),
           ProductPage.routeName: (context) => ProductPage(),
           RegistroPage.routeName: (context) => RegistroPage(),
-        },
+        },        
       ),
     );
   }

@@ -84,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _logingForm(BuildContext context) {
 
-    final bloc = Provider.of(context);
+    final bloc = Provider.ofLoginBloc(context);
     final size = MediaQuery.of(context).size;
 
     return SingleChildScrollView(
@@ -231,10 +231,9 @@ class _LoginPageState extends State<LoginPage> {
     }else if(info['exception']){
         mostrarSnackbar(_scaffoldKey, "Ha ocurrido un error. Revisa tu conexión a Internet"); 
     }else{
-      // showAlert(context, "Intentalo de nuevo", "Usuario o contraseña incorrectos");
-      mostrarSnackbar(_scaffoldKey, "Usuario o contraseña incorrectos");
+        mostrarSnackbar(_scaffoldKey, "Usuario o contraseña incorrectos");
     }
-
+    
     setState(() {
       _entrando = false;
     });

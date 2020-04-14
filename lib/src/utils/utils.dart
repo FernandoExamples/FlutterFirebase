@@ -38,4 +38,10 @@ void mostrarSnackbar(GlobalKey<ScaffoldState> scaffoldKey, String mensaje){
     scaffoldKey.currentState.showSnackBar(snackbar);
 }
 
+///Obtiene un porcentaje especifico de la altura de la pantalla
+double getPercentScreenHeigth(BuildContext context, double percent){
+  final screenSize = MediaQuery.of(context).size;
+  return screenSize.height * percent;
+}
+
 

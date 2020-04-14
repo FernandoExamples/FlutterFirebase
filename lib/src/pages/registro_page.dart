@@ -83,7 +83,7 @@ class _RegistroPageState extends State<RegistroPage> {
 
   Widget _logingForm(BuildContext context) {
 
-    final bloc = Provider.of(context);
+    final bloc = Provider.ofLoginBloc(context);
     final size = MediaQuery.of(context).size;
 
     return SingleChildScrollView(
