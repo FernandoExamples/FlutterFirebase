@@ -1,6 +1,5 @@
 import 'package:crud_rest/src/bloc/login_bloc.dart';
 import 'package:crud_rest/src/bloc/login_state.dart';
-import 'package:crud_rest/src/pages/home_page.dart';
 import 'package:crud_rest/src/pages/login_page.dart';
 import 'package:crud_rest/src/providers/user_provider.dart';
 import 'package:crud_rest/src/utils/utils.dart';
@@ -236,15 +235,18 @@ class _RegistroPageState extends State<RegistroPage> {
     Map info = await _state.registerNewUser(loginBloc.email, loginBloc.password);
     
     if(info['ok']){
+      ///Aunque el metodo registerUser() loguea al usuario y lo manda al HomePage al notificar 
+      ///el cambio en LoginState,
+      ///es necesario poner en la pila el LoginPage para regresar a esta pagina despues de un logout
+      ///De lo contrario el logout regresa a la pagina de RegistroPage
       Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
       showAlert(context, 'Usuario creado', 'El usuario se ha creado correctamente');
     }
 
-
-    if(!info['ok'])
-      mostrarSnackbar(_scaffoldKey, "El correo ya esta registrado");
-    else if(info['exception'])
+    if(info['exception'])
       mostrarSnackbar(_scaffoldKey, "Ha ocurrido un error. Revisa tu conexión a Internet");
+    else if(!info['ok'])
+      mostrarSnackbar(_scaffoldKey, "El correo ya esta registrado");
 
     setState(() {
       _registrando = false;

@@ -32,8 +32,8 @@ class LoginState with ChangeNotifier{
     Map info = await userProvider.nuevoUsuario(email, password);
 
     if(info['ok']){      
-      // _loggedIn = true;
-      // notifyListeners();     
+      _loggedIn = true;
+      notifyListeners();     
     }
 
     return info;

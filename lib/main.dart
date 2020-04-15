@@ -46,9 +46,9 @@ class MyApp extends StatelessWidget {
                 HomePage.routeName: (context) => HomePage(),
                 ProductPage.routeName: (context) => ProductPage(),
                 RegistroPage.routeName: (context) {
-                  // if (state.isLoggedIn)
-                  //   return HomePage();
-                  // else
+                  if (state.isLoggedIn)
+                    return HomePage();
+                  else
                     return RegistroPage();
                 },
               },
