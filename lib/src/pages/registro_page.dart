@@ -1,4 +1,5 @@
 import 'package:crud_rest/src/bloc/login_bloc.dart';
+import 'package:crud_rest/src/bloc/login_state.dart';
 import 'package:crud_rest/src/pages/home_page.dart';
 import 'package:crud_rest/src/pages/login_page.dart';
 import 'package:crud_rest/src/providers/user_provider.dart';
@@ -18,10 +19,14 @@ class _RegistroPageState extends State<RegistroPage> {
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final usuarioProvider = new UserProvider();
+  LoginState _state;
+
   bool _registrando = false;
 
   @override
   Widget build(BuildContext context) {
+    _state = Provider.of<LoginState>(context);
+
     return Scaffold(
        key: _scaffoldKey,
        body: Stack(children: <Widget>[
@@ -197,44 +202,49 @@ class _RegistroPageState extends State<RegistroPage> {
       stream: bloc.formValidStream,
       builder: (context, snapshot){
 
-        return RaisedButton(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-            child: Text('Registrarse'),
-          ),
+        if(_registrando){
+          return CircularProgressIndicator();
+        }else{
+            return RaisedButton(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
+                child: Text('Registrarse'),
+              ),
 
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5.0)
-          ),
-          elevation: 0.0,
-          color: Colors.deepPurple,
-          textColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0)
+              ),
+              elevation: 0.0,
+              color: Colors.deepPurple,
+              textColor: Colors.white,
 
-          onPressed: _registrando ? null : snapshot.hasData ? ()  => _register(context, bloc): null,
-        );
+              onPressed: snapshot.hasData ? ()  => _register(context, bloc): null,
+            );
+        }
 
       }      
     );
      
   }
 
-  void _register(BuildContext context, LoginBloc bloc) async {
+  void _register(BuildContext context, LoginBloc loginBloc) async {
 
     setState(() {
       _registrando = true;
     });
 
-    Map info = await usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
+    Map info = await _state.registerNewUser(loginBloc.email, loginBloc.password);
+    
+    if(info['ok']){
+      Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
+      showAlert(context, 'Usuario creado', 'El usuario se ha creado correctamente');
+    }
 
-    if(info['ok']){        
-        Navigator.pushReplacementNamed(context, HomePage.routeName);
-    }else if(info['exception']){
-        mostrarSnackbar(_scaffoldKey, "Ha ocurrido un error. Revisa tu conexión a Internet"); 
-    }
-    else{
-      //  showAlert(context, 'Usuario Existente', 'El correo que intentas registrar ya existe');
-       mostrarSnackbar(_scaffoldKey, 'El correo que intentas registrar ya existe');
-    }
+
+    if(!info['ok'])
+      mostrarSnackbar(_scaffoldKey, "El correo ya esta registrado");
+    else if(info['exception'])
+      mostrarSnackbar(_scaffoldKey, "Ha ocurrido un error. Revisa tu conexión a Internet");
 
     setState(() {
       _registrando = false;

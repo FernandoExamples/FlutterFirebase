@@ -27,4 +27,16 @@ class LoginState with ChangeNotifier{
     notifyListeners();
   }  
 
+  Future<Map<String, dynamic>> registerNewUser(String email, String password) async {
+
+    Map info = await userProvider.nuevoUsuario(email, password);
+
+    if(info['ok']){      
+      // _loggedIn = true;
+      // notifyListeners();     
+    }
+
+    return info;
+  }
+
 }

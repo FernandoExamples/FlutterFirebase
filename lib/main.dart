@@ -29,24 +29,31 @@ class MyApp extends StatelessWidget {
           Provider<LoginBloc>(create: (context) => LoginBloc()),
           Provider<ProductosBloc>(create: (context) => ProductosBloc()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Material App',
-        initialRoute: LoginPage.routeName,
-        theme: ThemeData(primaryColor: Colors.deepPurple),
-        routes: {
-          LoginPage.routeName: (context) {
-            var state = Provider.of<LoginState>(context);
-
-            if (state.isLoggedIn)
-              return HomePage();
-            else
-              return LoginPage();
-          },
-          HomePage.routeName: (context) => HomePage(),
-          ProductPage.routeName: (context) => ProductPage(),
-          RegistroPage.routeName: (context) => RegistroPage(),
-        },
+      child: Consumer<LoginState>(
+        builder: (BuildContext context, LoginState state, Widget child) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Material App',
+              initialRoute: LoginPage.routeName,
+              theme: ThemeData(primaryColor: Colors.deepPurple),
+              routes: {
+                LoginPage.routeName: (context) {
+                  if (state.isLoggedIn)
+                    return HomePage();
+                  else
+                    return LoginPage();
+                },
+                HomePage.routeName: (context) => HomePage(),
+                ProductPage.routeName: (context) => ProductPage(),
+                RegistroPage.routeName: (context) {
+                  // if (state.isLoggedIn)
+                  //   return HomePage();
+                  // else
+                    return RegistroPage();
+                },
+              },
+            );
+        }
       ),
     );
   }

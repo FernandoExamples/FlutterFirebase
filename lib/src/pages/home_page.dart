@@ -1,9 +1,10 @@
+import 'package:crud_rest/src/bloc/login_state.dart';
 import 'package:crud_rest/src/bloc/productos_bloc.dart';
 import 'package:crud_rest/src/exception/custom_exception.dart';
 import 'package:crud_rest/src/models/product.dart';
-import 'package:crud_rest/src/pages/login_page.dart';
 import 'package:crud_rest/src/pages/product_page.dart';
 import 'package:crud_rest/src/utils/utils.dart' as utils;
+import 'package:crud_rest/src/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,7 @@ class HomePage extends StatelessWidget {
        ),
        body: _createList(productosBloc),
        floatingActionButton: _floatingButton(context),
+       drawer: DrawerMenu(),
        
     );
 
@@ -60,8 +62,10 @@ class HomePage extends StatelessWidget {
             final error = snapshot.error as CustomException;
 
             if(error.code == CustomException.TIME_OUT_CODE){
-              //TODO hacer el logout
-              Navigator.pushReplacementNamed(context, LoginPage.routeName);
+
+              var loginState = Provider.of<LoginState>(context);
+              loginState.logout();
+
             }else if(error.code == CustomException.INTERNET_CODE){
               return ListView(
                 children: <Widget>[

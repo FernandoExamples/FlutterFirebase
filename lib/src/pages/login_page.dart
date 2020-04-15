@@ -203,21 +203,25 @@ class _LoginPageState extends State<LoginPage> {
       stream: loginBloc.formValidStream,
       builder: (context, snapshot){
 
-        return RaisedButton(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-            child: Text('Ingresar'),
-          ),
+        if(_entrando){
+            return CircularProgressIndicator();
+        }else{
+            return RaisedButton(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
+                child: Text('Ingresar'),
+              ),
 
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5.0)
-          ),
-          elevation: 0.0,
-          color: Colors.deepPurple,
-          textColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0)
+              ),
+              elevation: 0.0,
+              color: Colors.deepPurple,
+              textColor: Colors.white,
 
-          onPressed: _entrando ? null : snapshot.hasData ? ()  => _login(loginBloc): null,
-        );
+              onPressed:snapshot.hasData ? ()  => _login(loginBloc): null,
+           );
+        }
 
       }      
     );
@@ -233,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
     Map info = await _state.login(loginBloc.email, loginBloc.password);
     
     if(!info['ok'])
-      mostrarSnackbar(_scaffoldKey, "Usuario o contraseña incorrectos");
+      mostrarSnackbar(_scaffoldKey, 'Usuario o Contraseña incorrectos');
     else if(info['exception'])
       mostrarSnackbar(_scaffoldKey, "Ha ocurrido un error. Revisa tu conexión a Internet");
     
