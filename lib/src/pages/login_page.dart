@@ -1,5 +1,6 @@
 import 'package:crud_rest/src/bloc/login_bloc.dart';
 import 'package:crud_rest/src/bloc/login_state.dart';
+import 'package:crud_rest/src/models/user.dart';
 import 'package:crud_rest/src/pages/registro_page.dart';
 import 'package:crud_rest/src/providers/user_provider.dart';
 import 'package:crud_rest/src/utils/utils.dart';
@@ -234,11 +235,13 @@ class _LoginPageState extends State<LoginPage> {
       _entrando = true;
     });
 
-    Map info = await _state.login(loginBloc.email, loginBloc.password);
+    User user = await _state.login(loginBloc.email, loginBloc.password);
     
-    if(!info['ok'])
-      mostrarSnackbar(_scaffoldKey, 'Usuario o Contraseña incorrectos');
-    else if(info['exception'])
+    if(user != null){
+      if(!user.isCorrect)
+        mostrarSnackbar(_scaffoldKey, 'Usuario o Contraseña incorrectos');
+    }
+    else
       mostrarSnackbar(_scaffoldKey, "Ha ocurrido un error. Revisa tu conexión a Internet");
     
     setState(() {

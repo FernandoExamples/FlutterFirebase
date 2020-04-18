@@ -1,12 +1,9 @@
 import 'dart:convert';
-
-import 'package:crud_rest/src/shared_prefs/preferencias_usuario.dart';
 import 'package:http/http.dart' as http;
 
 class UserProvider{
 
   final _apiKey = 'AIzaSyANkSeF2B_4sk3sWjof1YEMXhX6KnEK53c';
-  final _prefs = new PreferenciasUsuario();
 
 
   ///Lanza una peticion POST a Firebase para crear un nuevo usuario 
@@ -27,20 +24,12 @@ class UserProvider{
           );
       } on Exception catch(ex){
           print(ex);
-          return {'ok': false, 'exception':true, 'mensaje': 'Exception has ocurred'};
+          return null;
       }
 
       Map<String, dynamic> decodedResp = json.decode(resp.body);
 
-      //si contiene el campo idToken es porque es una respuesta valida y se registro el usuario
-      if(decodedResp.containsKey('idToken')){
-
-        _prefs.token = decodedResp['idToken']; //guardar el token en las preferencias de usuario
-
-        return {'ok': true, 'exception':false, 'token': decodedResp['idToken']};
-      }else{
-        return {'ok': false, 'exception':false, 'mensaje': decodedResp['error']['message']};
-      }
+      return decodedResp;
   }
 
   Future<Map<String, dynamic>> login(String email, String password) async {
@@ -53,7 +42,7 @@ class UserProvider{
         'returnSecureToken' : true
       };
 
-        var resp;
+      var resp;
       try{
           resp = await http.post(
           loginEndpoint,
@@ -61,21 +50,11 @@ class UserProvider{
         );
       } on Exception catch(ex){
           print(ex);
-          return {'ok': false, 'exception':true, 'mensaje': 'Exception has ocurred'};
+          return null;
       }
 
-      Map<String, dynamic> decodedResp = json.decode(resp.body);
+      Map<String, dynamic> decodedResp = json.decode(resp.body);       
 
-      //print(decodedResp);
-
-      //si contiene el campo idToken es porque es una respuesta valida y existe el email
-      if(decodedResp.containsKey('idToken')){
-
-        _prefs.token = decodedResp['idToken']; //guardar el token en las preferencias de usuario
-
-        return {'ok': true, 'exception':false, 'token': decodedResp['idToken']};
-      }else{
-        return {'ok': false, 'exception':false, 'mensaje': decodedResp['error']['message']};
-      }
+      return decodedResp;
   }
 }

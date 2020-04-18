@@ -17,8 +17,12 @@ class PreferenciasUsuario {
     this._prefs = await SharedPreferences.getInstance();
   }
 
+  void clear(){
+    _prefs.clear();
+  }
+
   // GET y SET del token
-  get token {
+  String get token {
     return _prefs.getString('token') ?? '';
   }
 
@@ -26,14 +30,8 @@ class PreferenciasUsuario {
     _prefs.setString('token', value);
   }
   
-
-  // GET y SET de la última página
-  get ultimaPagina {
-    return _prefs.getString('ultimaPagina') ?? 'login';
-  }
-
-  set ultimaPagina( String value ) {
-    _prefs.setString('ultimaPagina', value);
-  }
+  bool get isRemembered{
+    return _prefs.getString('token') != null;
+  }  
 
 }
