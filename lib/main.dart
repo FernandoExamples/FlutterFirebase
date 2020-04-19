@@ -33,6 +33,9 @@ class MyApp extends StatelessWidget {
       child: Consumer<LoginState>(
         builder: (BuildContext context, LoginState state, Widget child) {
 
+          //if(state.isLoggedIn)
+            Provider.of<ProductosBloc>(context).cargarProductos();
+
           return MaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'Material App',

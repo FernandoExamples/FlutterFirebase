@@ -20,7 +20,8 @@ class ProductsProvider{
    * Con ese json se puede transformar a un mapa para obtener el id.
    */
   Future<String> saveProduct(Product producto) async{
-      String url = '$_url/productos.json?auth=${_prefs.token}';
+      String uid = _prefs.localId;
+      String url = '$_url/usuarios/$uid/productos.json?auth=${_prefs.token}';
 
       http.Response response;
 
@@ -52,8 +53,10 @@ class ProductsProvider{
    */
   Future<List<Product>> fetchAll() async {
       List<Product> productos = new List();
+      String uid = _prefs.localId;
 
-      String url = '$_url/productos.json?auth=${_prefs.token}';
+      String url = '$_url/usuarios/$uid/productos.json?auth=${_prefs.token}';
+
 
       http.Response resp;
       try{
@@ -66,7 +69,6 @@ class ProductsProvider{
         throw CustomException(CustomException.INTERNET_CODE, 'Error al obtener todos los registros');
 
       }
-
      
       Map<String, dynamic> decodedData = json.decode(resp.body);
       print(resp.body);
@@ -95,7 +97,8 @@ class ProductsProvider{
     resp se queda siempre null. 
    */
   Future<bool> deleteProduct(String id) async {
-      var url = '$_url/productos/$id.json?auth=${_prefs.token}';
+      String uid = _prefs.localId;
+      var url = '$_url/usuarios/$uid/productos/$id.json?auth=${_prefs.token}';
 
       try {
         await http.delete(url);
@@ -115,8 +118,8 @@ class ProductsProvider{
    * {disponible: true, titulo: celular, valor: 300.0}
    */
   Future<bool> editProduct(Product producto) async{
-
-      String url = '$_url/productos/${producto.id}.json?auth=${_prefs.token}';
+      String uid = _prefs.localId;
+      String url = '$_url/usuarios/$uid/productos/${producto.id}.json?auth=${_prefs.token}';
 
       http.Response response;
 

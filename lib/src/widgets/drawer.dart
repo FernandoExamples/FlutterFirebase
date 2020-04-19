@@ -28,7 +28,6 @@ class DrawerMenu extends StatelessWidget {
       title: Text(title),
       leading: Icon(icon, color: Colors.blue),
       onTap: () {
-         
           _loginState.logout();
       }
     );

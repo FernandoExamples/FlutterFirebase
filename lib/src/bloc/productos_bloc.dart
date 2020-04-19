@@ -16,9 +16,6 @@ class ProductosBloc{
   Stream<List<Product>> get productosStream => _productosController.stream;
   Stream<bool> get loadingStream => _loadingController.stream;
 
-  ProductosBloc(){
-     cargarProductos();
-  }
 
   Future<void> cargarProductos() async {      
       try{
