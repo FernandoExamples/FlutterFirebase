@@ -20,6 +20,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
 
@@ -31,29 +32,20 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<LoginState>(
         builder: (BuildContext context, LoginState state, Widget child) {
-            return MaterialApp(
+
+          return MaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'Material App',
-              initialRoute: LoginPage.routeName,
+              initialRoute:  LoginPage.routeName,
               theme: ThemeData(primaryColor: Colors.deepPurple),
               routes: {
-                LoginPage.routeName: (context) {
-                  if (state.isLoggedIn)
-                    return HomePage();
-                  else
-                    return LoginPage();
-                },
+                LoginPage.routeName: (context) => state.isLoggedIn ? HomePage() : LoginPage(),                
                 HomePage.routeName: (context) => HomePage(),
                 ProductPage.routeName: (context) => ProductPage(),
-                RegistroPage.routeName: (context) {
-                  if (state.isLoggedIn)
-                    return HomePage();
-                  else
-                    return RegistroPage();
-                },
+                RegistroPage.routeName: (context) => state.isLoggedIn ? HomePage() : RegistroPage()                 
               },
             );
-        }
+        },        
       ),
     );
   }

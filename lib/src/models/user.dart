@@ -4,7 +4,6 @@ class User {
     String localId;
     String email;
     String idToken;
-    bool registered;
     String refreshToken;
     String expiresIn;
 
@@ -12,7 +11,6 @@ class User {
         this.localId,
         this.email,
         this.idToken,
-        this.registered,
         this.refreshToken,
         this.expiresIn,
     });
@@ -23,7 +21,6 @@ class User {
         localId: json["localId"],
         email: json["email"],
         idToken: json["idToken"],
-        registered: json["registered"],
         refreshToken: json["refreshToken"],
         expiresIn: json["expiresIn"],
     );

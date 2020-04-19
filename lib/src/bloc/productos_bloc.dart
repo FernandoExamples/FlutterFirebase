@@ -20,14 +20,13 @@ class ProductosBloc{
      cargarProductos();
   }
 
-  Future<void> cargarProductos() async {
-      
+  Future<void> cargarProductos() async {      
       try{
         var productos = await _productosProvider.fetchAll();
         _productosController.sink.add(productos);
       }on CustomException catch(ex){
         print(ex.message);
-        print(ex);
+        print(ex);      
         _productosController.addError(ex);
       }
   }

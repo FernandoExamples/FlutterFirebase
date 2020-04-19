@@ -7,7 +7,7 @@ import 'package:crud_rest/src/providers/user_provider.dart';
 ///Controla el estado de logueo del usuario, asi como el usuario logueado
 class LoginState with ChangeNotifier{
 
-  final userProvider = UserProvider();
+  final _userProvider = UserProvider();
   final _prefs = new PreferenciasUsuario();
   User user; 
 
@@ -15,9 +15,21 @@ class LoginState with ChangeNotifier{
 
   bool get isLoggedIn => _loggedIn;
 
+  LoginState(){
+     if(_prefs.isRemembered){
+       _loggedIn = true;
+       user = new User(
+         idToken: _prefs.token,
+         email: _prefs.email,
+         localId: _prefs.localId,
+         refreshToken: _prefs.refreshToken
+       );
+     }
+  }
+
   Future<User> login(String email, String password) async {
 
-    Map info = await userProvider.login(email, password);
+    Map info = await _userProvider.login(email, password);
 
     if(info != null){  
 
@@ -25,6 +37,9 @@ class LoginState with ChangeNotifier{
       if(info.containsKey('idToken')){
         user = User.fromMap(info);
         _prefs.token = info['idToken']; //guardar el token en las preferencias de usuario
+        _prefs.email = info['email'];
+        _prefs.localId = info['localId'];
+        _prefs.refreshToken = info['refreshToken'];
         _loggedIn = true;
         notifyListeners();  
       }else{
@@ -44,7 +59,7 @@ class LoginState with ChangeNotifier{
 
   Future<User> registerNewUser(String email, String password) async {
 
-    Map info = await userProvider.nuevoUsuario(email, password);
+    Map info = await _userProvider.nuevoUsuario(email, password);
 
      if(info != null){  
 
@@ -65,4 +80,18 @@ class LoginState with ChangeNotifier{
 
   }
 
+  Future<bool> refreshToken() async {
+     Map info = await _userProvider.refreshToken(user.refreshToken);
+
+     if(info != null){
+       user.idToken = info['id_token'];
+       user.expiresIn = info['expires_in'];
+       user.localId = info['user_id'];
+       user.refreshToken = info['refresh_token'];
+       notifyListeners();
+       return true;
+     }
+
+    return  false;
+  }
 }

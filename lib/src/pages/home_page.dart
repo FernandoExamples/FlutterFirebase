@@ -18,13 +18,14 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final productosBloc = Provider.of<ProductosBloc>(context);
+    final state = Provider.of<LoginState>(context);
 
     return Scaffold(
        key: _scaffoldKey,
        appBar: AppBar(
           title: Text('HomePage'),
        ),
-       body: _createList(productosBloc),
+       body: _createList(productosBloc, state),
        floatingActionButton: _floatingButton(context),
        drawer: DrawerMenu(),
        
@@ -42,7 +43,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _createList(ProductosBloc productosBloc){
+  Widget _createList(ProductosBloc productosBloc, LoginState state){
     
     var str = StreamBuilder(
       stream: productosBloc.productosStream ,
@@ -63,8 +64,8 @@ class HomePage extends StatelessWidget {
 
             if(error.code == CustomException.TIME_OUT_CODE){
 
-              var loginState = Provider.of<LoginState>(context);
-              loginState.logout();
+              // state.logout();
+              state.refreshToken();
 
             }else if(error.code == CustomException.INTERNET_CODE){
               return ListView(
