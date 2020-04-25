@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:crud_rest/src/keys/keys.dart';
 
 class UserProvider{
 
-  final _apiKey = 'AIzaSyANkSeF2B_4sk3sWjof1YEMXhX6KnEK53c';
-
-
   ///Lanza una peticion POST a Firebase para crear un nuevo usuario 
   Future<Map<String, dynamic>> nuevoUsuario(String email, String password) async {
-    final registEndPoint = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$_apiKey';
+    final registEndPoint = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey';
 
       final authData = {
         'email' : email,
@@ -25,7 +23,7 @@ class UserProvider{
 
   Future<Map<String, dynamic>> login(String email, String password) async {
 
-      final loginEndpoint = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$_apiKey';
+      final loginEndpoint = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$apiKey';
 
       final authData = {
         'email' : email,
@@ -42,7 +40,7 @@ class UserProvider{
 
   Future<Map<String, dynamic>> refreshToken(String refreshToken) async {
 
-      final loginEndpoint = 'https://securetoken.googleapis.com/v1/token?key=$_apiKey';
+      final loginEndpoint = 'https://securetoken.googleapis.com/v1/token?key=$apiKey';
 
       final authData = {
         'grant_type' : 'refresh_token',
