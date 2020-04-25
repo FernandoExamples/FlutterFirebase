@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:crud_rest/src/exception/custom_exception.dart';
+import 'package:crud_rest/src/shared_prefs/preferencias_usuario.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime_type/mime_type.dart';
@@ -9,6 +11,7 @@ import 'package:crud_rest/src/models/product.dart';
 class ProductsProvider{
 
   final String _url = 'https://flutter-varios-92b9d.firebaseio.com';
+  final _prefs = new PreferenciasUsuario();
 
   /*
    * Metodo que hace un post a Firebase para guardar un objeto en Json. 
@@ -17,7 +20,8 @@ class ProductsProvider{
    * Con ese json se puede transformar a un mapa para obtener el id.
    */
   Future<String> saveProduct(Product producto) async{
-      String url = '$_url/productos.json';
+      String uid = _prefs.localId;
+      String url = '$_url/usuarios/$uid/productos.json?auth=${_prefs.token}';
 
       http.Response response;
 
@@ -49,8 +53,10 @@ class ProductsProvider{
    */
   Future<List<Product>> fetchAll() async {
       List<Product> productos = new List();
+      String uid = _prefs.localId;
 
-      String url = '$_url/productos.json';
+      String url = '$_url/usuarios/$uid/productos.json?auth=${_prefs.token}';
+
 
       http.Response resp;
       try{
@@ -58,22 +64,30 @@ class ProductsProvider{
       }
       on Exception catch(ex){
         print(ex);
-        return Future.error('Error al obtener todos los registros. fetchAll()');
-      }
+        // return Future.error('Error al obtener todos los registros. fetchAll()');
+        // throw Exception('Error al obtener todos los registros. fetchAll()');
+        throw CustomException(CustomException.INTERNET_CODE, 'Error al obtener todos los registros');
 
+      }
      
       Map<String, dynamic> decodedData = json.decode(resp.body);
+      print(resp.body);
+      print(decodedData);
 
       //si no hay productos en Firebase se regresa un String con "null" en el body de resp, 
       //lo que hace que decodedData quede null
-      if(decodedData != null){
-          decodedData.forEach((id, product){
-              var prodTemp = Product.fromMap(product);
-              prodTemp.id = id;
+      if(decodedData == null) return[];
 
-              productos.add(prodTemp);
-          });
-      }      
+      if(decodedData['error'] != null) 
+        throw CustomException(CustomException.TIME_OUT_CODE, 'El token ha expirado');
+
+
+      decodedData.forEach((id, product){
+          var prodTemp = Product.fromMap(product);
+          prodTemp.id = id;
+
+          productos.add(prodTemp);
+      });
 
       return productos;
   }
@@ -82,19 +96,20 @@ class ProductsProvider{
     Elimina un objeto de Firebase. El servidor no manda respuesta.
     resp se queda siempre null. 
    */
-  Future<int> deleteProduct(String id) async {
-      var url = '$_url/productos/$id.json';
+  Future<bool> deleteProduct(String id) async {
+      String uid = _prefs.localId;
+      var url = '$_url/usuarios/$uid/productos/$id.json?auth=${_prefs.token}';
 
       try {
-        final resp = await http.delete(url);
+        await http.delete(url);
       }on Exception catch(ex){
         print(ex);
-        return -1;
+        return false;
       }
 
       // print(resp.body);
 
-      return 1;
+      return true;
   }
 
   /*
@@ -103,8 +118,8 @@ class ProductsProvider{
    * {disponible: true, titulo: celular, valor: 300.0}
    */
   Future<bool> editProduct(Product producto) async{
-
-      String url = '$_url/productos/${producto.id}.json';
+      String uid = _prefs.localId;
+      String url = '$_url/usuarios/$uid/productos/${producto.id}.json?auth=${_prefs.token}';
 
       http.Response response;
 

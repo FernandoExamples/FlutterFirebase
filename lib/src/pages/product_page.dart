@@ -1,10 +1,11 @@
 import 'dart:io';
-
+import 'package:crud_rest/src/bloc/productos_bloc.dart';
+import 'package:crud_rest/src/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:crud_rest/src/models/product.dart';
-import 'package:crud_rest/src/providers/products_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:crud_rest/src/utils/utils.dart' as utils;
+import 'package:provider/provider.dart';
 
 class ProductPage extends StatefulWidget {
 
@@ -19,14 +20,15 @@ class _ProductPageState extends State<ProductPage> {
   final _formKey = GlobalKey<FormState>();
   final _scafoldKey = GlobalKey<ScaffoldState>();
 
-  final _productProvider = ProductsProvider();
+  ProductosBloc _productosBloc;
   Product _producto = new Product();
-  bool _guardando = false;
   File _foto;
   
 
   @override
   Widget build(BuildContext context) {
+
+    _productosBloc = Provider.of<ProductosBloc>(context);
 
     final prodArgs = ModalRoute.of(context).settings.arguments;
     if( prodArgs != null){
@@ -111,16 +113,25 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget _crearBoton(BuildContext context){
-    return RaisedButton.icon(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      color: Theme.of(context).primaryColor,
-      textColor: Colors.white,
-      icon: Icon(Icons.save),
-      label: Text('Guardar'),
-      onPressed: _guardando ? null : _submit,
+
+    return StreamBuilder(
+      stream: _productosBloc.loadingStream,
+      initialData: false,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
+          return RaisedButton.icon(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          color: Theme.of(context).primaryColor,
+          textColor: Colors.white,
+          icon: Icon(Icons.save),
+          label: Text('Guardar'),
+          onPressed: snapshot.data ? null : _submit,
+        );
+      },
     );
+
+    
   }
 
   Widget _crearDisponible(){
@@ -145,43 +156,30 @@ class _ProductPageState extends State<ProductPage> {
     //deberia llamarse despues de haber validado con validate()
     _formKey.currentState.save();
 
-    setState(() { _guardando = true; } );
 
-     if( _foto != null ){
-       _producto.fotoUrl = await _productProvider.subirImagen(_foto);
+    if( _foto != null ){
+       _producto.fotoUrl = await _productosBloc.subirFoto(_foto);
     }
 
     if( _producto.id == null ){
       
-      String id = await _productProvider.saveProduct(_producto);
+      String id = await _productosBloc.agregarProducto(_producto);
       
       if(id == null)
-        _mostrarSnackbar('Hubo un error al guardar el producto. Revia tu conexión  a Internet');
+        mostrarSnackbar(_scafoldKey, 'Hubo un error al guardar el producto. Revia tu conexión  a Internet');
       else      
         Navigator.pop(context);
 
     }else{
 
-      bool updated = await _productProvider.editProduct(_producto);
+      bool updated = await _productosBloc.editarProducto(_producto);
       if(updated)
         Navigator.pop(context);
       else
-        _mostrarSnackbar('Hubo un error al actualizar el producto. Revia tu conexión  a Internet');
+        mostrarSnackbar(_scafoldKey, 'Hubo un error al actualizar el producto. Revia tu conexión  a Internet');
 
     }
 
-    setState(() { _guardando = false; } );
-
-  }
-
-  void _mostrarSnackbar(String mensaje){
-
-    final snackbar = SnackBar(
-        content: Text(mensaje),
-        duration: Duration(milliseconds: 1500),
-    );
-    
-    _scafoldKey.currentState.showSnackBar(snackbar);
   }
 
    Widget _mostrarFoto(){
@@ -197,8 +195,6 @@ class _ProductPageState extends State<ProductPage> {
     }else{
 
       return Image(
-          //image: AssetImage( _foto?.path ?? 'assets/no_image.png'),
-          //image: FileImage(File(_foto.path)),
           image: _foto?.path == null ? AssetImage('assets/no_image.png') : FileImage(File(_foto.path)),
           height: 300.0,
           fit: BoxFit.cover,
@@ -229,4 +225,5 @@ class _ProductPageState extends State<ProductPage> {
 
     setState(() {});
   }
+
 }

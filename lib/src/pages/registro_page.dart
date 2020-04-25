@@ -1,34 +1,32 @@
 import 'package:crud_rest/src/bloc/login_bloc.dart';
 import 'package:crud_rest/src/bloc/login_state.dart';
 import 'package:crud_rest/src/models/user.dart';
-import 'package:crud_rest/src/pages/registro_page.dart';
+import 'package:crud_rest/src/pages/login_page.dart';
 import 'package:crud_rest/src/providers/user_provider.dart';
 import 'package:crud_rest/src/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LoginPage extends StatefulWidget {
+class RegistroPage extends StatefulWidget {
 
-  static final routeName = 'login';
+  static final routeName = 'registro';
 
   @override
-  _LoginPageState createState() => _LoginPageState();
-
+  _RegistroPageState createState() => _RegistroPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegistroPageState extends State<RegistroPage> {
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  final userProvider = UserProvider();
+  final usuarioProvider = new UserProvider();
   LoginState _state;
-  bool _entrando = false; 
 
+  bool _registrando = false;
 
   @override
   Widget build(BuildContext context) {
-
     _state = Provider.of<LoginState>(context);
-    
+
     return Scaffold(
        key: _scaffoldKey,
        body: Stack(children: <Widget>[
@@ -123,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
 
             child: Column(
               children: <Widget>[
-                Text('Ingreso', style: TextStyle(fontSize: 20.0)),
+                Text('Registro', style: TextStyle(fontSize: 20.0)),
                 SizedBox(height: 60.0),
                 _crearEmail(loginBloc),
                 SizedBox(height: 30.0),
@@ -135,8 +133,8 @@ class _LoginPageState extends State<LoginPage> {
           ),
 
           FlatButton(
-              child: Text('Crear una nueva cuenta'),
-              onPressed: () => Navigator.pushReplacementNamed(context, RegistroPage.routeName),
+              child: Text('¿Ya tienes cuenta? Login'),
+              onPressed: () => Navigator.pushReplacementNamed(context, LoginPage.routeName),
           ),
           SizedBox(height: 100)
           
@@ -145,10 +143,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _crearEmail(LoginBloc loginBloc){
+  Widget _crearEmail(LoginBloc bloc){
 
     return StreamBuilder(
-      stream: loginBloc.emailStream ,
+      stream: bloc.emailStream ,
       builder: (BuildContext context, AsyncSnapshot snapshot){
 
         return Container(
@@ -162,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                   errorText: snapshot.error
                 ),  
 
-                onChanged: (value) => loginBloc.changeEmail(value),
+                onChanged: (value) => bloc.changeEmail(value),
                 
               ),
             );
@@ -172,11 +170,11 @@ class _LoginPageState extends State<LoginPage> {
 
   }
 
-  Widget _crearPassword(LoginBloc loginBloc){
+  Widget _crearPassword(LoginBloc bloc){
 
 
     return StreamBuilder(
-      stream: loginBloc.passwordStream ,
+      stream: bloc.passwordStream ,
       builder: (BuildContext context, AsyncSnapshot snapshot){
         
         return Container(
@@ -190,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                   errorText: snapshot.error,
                 ),   
                 onChanged: (value){
-                  loginBloc.changePassword(value);
+                  bloc.changePassword(value);
                 },          
               ),
             );
@@ -198,19 +196,19 @@ class _LoginPageState extends State<LoginPage> {
     );  
   }
 
-  Widget _crearBoton(BuildContext context, LoginBloc loginBloc){
+  Widget _crearBoton(BuildContext context, LoginBloc bloc){
 
     return StreamBuilder(
-      stream: loginBloc.formValidStream,
+      stream: bloc.formValidStream,
       builder: (context, snapshot){
 
-        if(_entrando){
-            return CircularProgressIndicator();
+        if(_registrando){
+          return CircularProgressIndicator();
         }else{
             return RaisedButton(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-                child: Text('Ingresar'),
+                child: Text('Registrarse'),
               ),
 
               shape: RoundedRectangleBorder(
@@ -220,8 +218,8 @@ class _LoginPageState extends State<LoginPage> {
               color: Colors.deepPurple,
               textColor: Colors.white,
 
-              onPressed:snapshot.hasData ? ()  => _login(loginBloc): null,
-           );
+              onPressed: snapshot.hasData ? ()  => _register(context, bloc): null,
+            );
         }
 
       }      
@@ -229,24 +227,31 @@ class _LoginPageState extends State<LoginPage> {
      
   }
 
-  void _login(LoginBloc loginBloc) async {
-    
+  void _register(BuildContext context, LoginBloc loginBloc) async {
+
     setState(() {
-      _entrando = true;
+      _registrando = true;
     });
 
-    User user = await _state.login(loginBloc.email, loginBloc.password);
+    User user = await _state.registerNewUser(loginBloc.email, loginBloc.password);
     
     if(user != null){
-      if(!user.isCorrect)
-        mostrarSnackbar(_scaffoldKey, 'Usuario o Contraseña incorrectos');
-    }
-    else
-      mostrarSnackbar(_scaffoldKey, "Ha ocurrido un error. Revisa tu conexión a Internet");
-    
-    setState(() {
-      _entrando = false;
-    });
+      ///Aunque el metodo registerUser() loguea al usuario y lo manda al HomePage al notificar 
+      ///el cambio en LoginState,
+      ///es necesario poner en la pila el LoginPage para regresar a esta pagina despues de un logout
+      ///De lo contrario el logout regresa a la pagina de RegistroPage
+      if(user.isCorrect){
+        Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
+        showAlert(context, 'Usuario creado', 'El usuario se ha creado correctamente');
+      }else
+        mostrarSnackbar(_scaffoldKey, "El correo ya esta registrado");
 
+    }else
+      mostrarSnackbar(_scaffoldKey, "Ha ocurrido un error. Revisa tu conexión a Internet");
+
+    setState(() {
+      _registrando = false;
+    });
   }
+   
 }
